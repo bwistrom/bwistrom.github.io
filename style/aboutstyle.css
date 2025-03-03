@@ -1,0 +1,133 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Orbitron, Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    background-image: url('/img/man2.jpg'); /* Replace with your image URL */
+    background-size: cover;  /* Cover the entire screen */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent repetition */
+    background-attachment: fixed; /* Fixes the background so it doesn’t move */
+}
+
+/* Header */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%; 
+    z-index: 1000; 
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ----- Main Section ----- */
+main {
+    padding-top: 50px; /* Add space below the fixed header */
+    width: 100%; /* Adjust width based on screen size */
+    margin: 0 auto; /* Center it */
+}
+
+h1 {
+    font-family: Audiowide;
+    text-align: center;
+    color: rgb(10, 39, 49);
+    padding: 0.7rem;
+    letter-spacing: 0.1rem;
+    font-size: 2.5vw;
+} 
+
+h2 {
+    font-family: Lavishly Yours;
+    color: rgba(113, 15, 15, 0.829);
+    font-size: 5.5vw; /* Adjust to be more responsive */
+}
+
+h3 {
+    font-family: Griffy;
+    color: rgb(255, 123, 0);
+}
+
+h4 {
+    font-family: Sour Gummy;
+}
+
+.hero {
+    color: rgba(255, 255, 255, 0.689);
+    font-size: 20px;
+}
+
+.feature { 
+    color: rgb(247, 247, 247);
+    font-size: 24px;
+}
+
+.highlight {
+    background-color: rgba(3, 2, 2, 0.53);
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+/* Navigation */
+nav ul {
+    list-style: none;
+    padding: 40px;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 24px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    position: relative;
+    padding-bottom: 5px;
+    transition: color 0.3s ease-in-out;
+}
+
+nav ul li a:hover {
+    color: #07031b; /* Changes color */
+}
+
+nav ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: #a05212; /* underline */
+    transform: scaleX(0);
+    transition: transform 0.3s ease-in-out;
+}
+
+nav ul li a:hover::after {
+    transform: scaleX(1);
+}
+
+/* Footer */
+footer {
+    background: #222;
+    color: white;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Media Query */
+@media (min-width: 768px) {
+    #aboutme {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        max-width: 1200px; /* limit the container width */
+        margin: 0 auto; /* center the container */
+    }
+}

@@ -1,0 +1,169 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Orbitron, Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+/* ----- BODY ---- */
+body {
+    background-image: url('/img/museum.jpg');
+    background-size: cover;  /* Cover the entire screen */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent repetition */
+    background-attachment: fixed; /* Fixes the background so it doesn’t move */
+    padding-bottom: 50px; /* To prevent footer overlap */
+}
+
+/* Header */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%; 
+    z-index: 1000; 
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Main Content */
+main {
+    width: 80%; /* Adjust width */
+    margin: 20px auto; /* Center the box */
+    padding: 50px; /* Space inside the box */
+    text-align: center; /* Center text inside */
+    color: rgba(255, 255, 255, 0.813);
+} 
+
+/* Highlighted Text */
+.highlight {
+    background-color: rgb(93, 77, 77);
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+/* Heading Styles */
+h1 {
+    font-family: Audiowide;
+    text-align: center;
+    color: rgba(205, 10, 36, 0.906);
+    padding: 0.7rem;
+    letter-spacing: 0.1rem;
+    font-size: 2rem;
+}
+
+h2 {
+    font-family: Lavishly Yours;
+    color: rgba(240, 222, 198, 0.781);
+    font-size: 3vw;
+    text-align: center;
+    padding: 3vw;
+}
+
+/* Navigation */
+nav ul {
+    list-style: none;
+    padding: 40px 0; /* Added padding for spacing */
+    text-align: center; /* Center the navigation items */
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 24px;
+    position: relative; /* Ensure relative positioning for pseudo-element */
+}
+
+nav ul li a {
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-weight: bold;
+    position: relative;
+    padding-bottom: 5px; /* Padding at the bottom for the underline */
+    transition: color 0.3s ease-in-out;
+    z-index: 1; /* Ensures the text is above the underline */
+}
+
+nav ul li a:hover {
+    color: #dc1212d3;
+}
+
+nav ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: #a05212; /* Underline color */
+    transform: scaleX(0); /* Initially hidden */
+    transition: transform 0.3s ease-in-out;
+    z-index: -1; /* Ensures the underline stays below the text */
+}
+
+nav ul li a:hover::after {
+    transform: scaleX(1); /* Expands the underline on hover */
+}
+
+
+/* Gallery Section */
+.gallery {
+    text-align: center;
+    padding: 50px;
+    font-size: 2vw;
+}
+
+.gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Auto-adjust for different screen sizes */
+    gap: 15px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.gallery-item {
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out;
+}
+
+.gallery-item img:hover {
+    transform: scale(1.3);
+}
+
+/* Footer */
+footer {
+    background: #222;
+    color: white;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+    .gallery-container {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* More columns for wider screens */
+        max-width: 1200px;
+        margin: 0 auto; /* Center the container */
+    }
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.5rem; /* Smaller font size on small screens */
+    }
+
+    .gallery-container {
+        grid-template-columns: 1fr; /* Stack items on mobile */
+    }
+}
