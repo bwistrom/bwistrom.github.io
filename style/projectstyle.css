@@ -22,10 +22,6 @@ h2, h3, h4 {
     color: rgb(20, 13, 13);
 }
 
-/* .about{
-    text-align: center;
-} */
-
 .container {
     display: flex;
     flex-wrap: wrap;
@@ -45,7 +41,7 @@ h2, h3, h4 {
 }
 
 .project:hover {
-    transform: scale(1.03);
+    transform: scale(1.30);
 }
 
 .project h2 {

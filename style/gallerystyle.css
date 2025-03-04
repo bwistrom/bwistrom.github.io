@@ -42,6 +42,7 @@ main {
     background-color: rgb(93, 77, 77);
     padding: 2px 5px;
     border-radius: 3px;
+    
 }
 
 /* Heading Styles */
@@ -120,6 +121,7 @@ nav ul li a:hover::after {
     gap: 15px;
     max-width: 1000px;
     margin: auto;
+    padding-top: 2vw;
 }
 
 .gallery-item {
