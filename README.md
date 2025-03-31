@@ -20,8 +20,8 @@
 ## <div align="center">🌟 Special Features</div>
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Mind%20Control-Active-00ffc8?style=flat-square&logo=brain&logoColor=black" alt="Mind Control"/>
-  <img src="https://img.shields.io/badge/Time%20Manipulation-Enabled-00ffc8?style=flat-square&logo=clock&logoColor=black" alt="Time Manipulation"/>
+  <img src="https://img.shields.io/badge/Mind%20Control-Active-00ffc8?style=flat-square&logo=brain&logoColor=black" alt="Troll Controll"/>
+  <img src="https://img.shields.io/badge/Time%20Manipulation-Enabled-00ffc8?style=flat-square&logo=clock&logoColor=black" alt="Time Management"/>
   <img src="https://img.shields.io/badge/Digital%20Realm-Open-00ffc8?style=flat-square&logo=react&logoColor=black" alt="Digital Realm"/>
 </div>
 
