@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Technology Environment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background: #0a0a0f;
+            color: #00ffc8;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .tech-grid {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0, 255, 200, 0.05), rgba(0, 255, 200, 0.02));
+            border: none;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            animation: techPulse 3s infinite;
+        }
+
+        .tech-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(90deg, rgba(0, 255, 200, 0.05) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(0, 255, 200, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 30s linear infinite;
+        }
+
+        .tech-grid::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 255, 200, 0.1), transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: techGlow 4s ease-in-out infinite;
+        }
+
+        .hologram {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: rgba(0, 255, 200, 0.05);
+            border: 2px solid rgba(0, 255, 200, 0.2);
+            border-radius: 50%;
+            animation: hologramPulse 6s ease-in-out infinite;
+        }
+
+        .return-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(0, 255, 200, 0.1);
+            border: 2px solid #00ffc8;
+            color: #00ffc8;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px rgba(0, 255, 200, 0.5);
+            box-shadow: 0 0 15px rgba(0, 255, 200, 0.2);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .return-button:hover {
+            background: rgba(0, 255, 200, 0.2);
+            transform: scale(1.05) rotate(180deg);
+            box-shadow: 0 0 25px rgba(0, 255, 200, 0.4);
+        }
+
+        .tech-title {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(0, 255, 200, 0.5);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 2s ease forwards;
+        }
+
+        @keyframes techPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.02); opacity: 1; }
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        @keyframes techGlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes hologramPulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 50px rgba(0, 255, 200, 0.2);
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.1);
+                box-shadow: 0 0 100px rgba(0, 255, 200, 0.3);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-grid">
+        <div class="hologram"></div>
+    </div>
+    <h1 class="tech-title">Advanced Technology Environment</h1>
+    <a href="index.html" class="return-button" onclick="localStorage.setItem('returnFromTech', 'true')">Return to Normal</a>
+
+    <script>
+        // Clear the flag when entering the tech environment
+        localStorage.removeItem('returnFromTech');
+    </script>
+</body>
+</html> 
