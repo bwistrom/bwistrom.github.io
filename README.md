@@ -1,4 +1,4 @@
-# <div align="center">🌌 MarX W</div>
+# <div align="center">🌌 MarX Wiström</div>
 
 <div align="center">
   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=00FFC8&center=true&vCenter=true&width=435&lines=Future+Coder+v.1.0" alt="Typing SVG" />
