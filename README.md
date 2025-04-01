@@ -9,13 +9,13 @@
 </div>
 
 <div align="center">
-  <a href="https://github.com/MarXW/NEWUNIVERSEv1.0">
+  <a href="https://bwistrom.github.io">
     <img src="https://github-readme-stats.vercel.app/api/pin/?username=MarXW&repo=NEWUNIVERSEv1.0&theme=dark&hide_border=true&bg_color=0D1117&title_color=00FFC8&text_color=ffffff" alt="Current Project"/>
   </a>
 </div>
 
 <div align="center">
-  <a href="mailto:marxwahlorian@gmail.com">
+  <a href="mailto:003wistrom@gmail.com">
     <img src="https://img.shields.io/badge/Email-marxwahlorian@gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/>
   </a>
 </div>
