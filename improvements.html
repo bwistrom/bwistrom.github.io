@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace Improvements</title>
+    <link rel="stylesheet" href="improvements.css">
+    <link rel="stylesheet" href="button-styles.css">
+</head>
+<body>
+    <!-- Loading Indicator -->
+    <div class="loading-indicator">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading improvements...</div>
+    </div>
+
+    <!-- Tooltip Container -->
+    <div id="tooltip-container"></div>
+
+    <!-- Transition Overlay -->
+    <div class="transition-overlay"></div>
+
+    <!-- Save/Load Interface -->
+    <div class="save-load-interface">
+        <button class="save-load-button" id="save-button">Save</button>
+        <button class="save-load-button" id="load-button">Load</button>
+    </div>
+
+    <!-- Scene Hierarchy Panel -->
+    <div class="hierarchy-panel">
+        <h3>Scene Hierarchy</h3>
+        <div id="hierarchy-container"></div>
+    </div>
+
+    <!-- Undo/Redo Controls -->
+    <div class="undo-redo-controls">
+        <button class="undo-redo-button" id="undo-button">Undo</button>
+        <button class="undo-redo-button" id="redo-button">Redo</button>
+    </div>
+
+    <!-- Tool Manager -->
+    <div class="tool-manager">
+        <button class="tool-button" data-tool="select">Select</button>
+        <button class="tool-button" data-tool="transform">Transform</button>
+        <button class="tool-button" data-tool="scale">Scale</button>
+        <button class="tool-button" data-tool="rotate">Rotate</button>
+    </div>
+
+    <!-- Mobile Controls -->
+    <div class="mobile-controls">
+        <button class="mobile-button" id="mobile-menu">Menu</button>
+        <button class="mobile-button" id="mobile-tools">Tools</button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="improvements.js"></script>
+    <script src="button-controls.js"></script>
+    <script>
+        // Initialize improvements when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // The improvements will be initialized through the improvements.js file
+            console.log('Improvements initialized');
+        });
+    </script>
+</body>
+</html> 
