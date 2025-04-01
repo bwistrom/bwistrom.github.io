@@ -78,4 +78,4 @@ Welcome to the New Universe. Your journey through time and space begins here.
 
 ---
 
-*"In the realm of infinite possibilities, every moment is a new beginning, every interaction a new story, and every journey an adventure through the fabric of digital dreams."* 
+*"In the realm of infinite possibilities, every moment is a new beginning, every interaction a new story, and every journey an adventure through the fabric of digital dreams."* // MarX Björn Wahlorian Wiström ***
