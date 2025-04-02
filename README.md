@@ -90,7 +90,9 @@ This is a prototype version of the Online Integration Platform. The final produc
 
 ## Security Notice
 
-This platform is designed with security and privacy as its core principles. We do not collect, store, or share any user data. All information remains under your complete control.
+This platform is designed with security and privacy as its core principles. We do not collect, store, or share any user data. All information remains under your complete control. 
+It is so secure so you can only enter with special privliges - Use Code "911876418" to browse the environment.
+
 
 ---
 
