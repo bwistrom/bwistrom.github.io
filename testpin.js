@@ -97,79 +97,27 @@ function handlePin(pin) {
         }
         
         const newCount = currentCount + 1;
-        
-        // Only proceed if storage update is successful
-        if (!setSecureUsageCount(newCount)) {
-            showExpiredMessage();
-            return false;
-        }
-        
-        if (newCount > MAX_TEST_USES) {
-            showExpiredMessage();
-            return false;
-        }
-        
-        // Set timeout to reload page with secure interval
-        const timeoutId = setTimeout(() => {
-            window.location.reload();
-        }, TEST_TIMEOUT);
-        
-        // Store timeout ID to prevent manipulation
-        window._testTimeoutId = timeoutId;
-        
+        setSecureUsageCount(newCount);
         return true;
     }
     
     return false;
 }
 
-// Show humorous expired message with enhanced security
+// Show expired message
 function showExpiredMessage() {
-    const messages = [
-        "Oops! The test version has gone on vacation to the quantum realm!",
-        "The test version is currently busy saving the universe...",
-        "The test version has been abducted by aliens!",
-        "The test version is taking a coffee break in another dimension!",
-        "The test version has evolved into a higher form of consciousness!",
-        "The test version is currently debugging the space-time continuum!",
-        "The test version has been recruited by the Time Lords!",
-        "The test version is currently calibrating the flux capacitor!"
-    ];
-    
-    // Use a secure random number generator
-    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-    
-    const pinOverlay = document.getElementById('pinOverlay');
-    if (!pinOverlay) return;
-    
-    const pinContainer = pinOverlay.querySelector('.pin-container');
-    if (!pinContainer) return;
-    
-    // Sanitize HTML content
-    const sanitizedMessage = randomMessage.replace(/[<>]/g, '');
-    
-    pinContainer.innerHTML = `
-        <h2 style="color: #00ffff; font-family: 'Orbitron', monospace; text-align: center;">Access Restricted</h2>
-        <p style="color: #00ffff; font-family: 'Orbitron', monospace; text-align: center; margin: 20px 0;">${sanitizedMessage}</p>
-        <p style="color: #00ffff; font-family: 'Orbitron', monospace; text-align: center; font-size: 14px;">Please contact MarX Björn Wiström for access.</p>
-        <p style="color: #00ffff; font-family: 'Orbitron', monospace; text-align: center; font-size: 12px; margin-top: 20px;">Access codes are distributed manually only.</p>
-    `;
-    
-    // Disable the input and button
     const pinInput = document.getElementById('pinInput');
-    const verifyButton = pinOverlay.querySelector('.pin-button');
-    if (pinInput) pinInput.disabled = true;
-    if (verifyButton) verifyButton.style.display = 'none';
+    if (pinInput) {
+        pinInput.value = '';
+    }
 }
 
-// Prevent manipulation of the timeout
-window.addEventListener('beforeunload', () => {
-    if (window._testTimeoutId) {
-        clearTimeout(window._testTimeoutId);
+// Test PIN handler object
+window.testPinHandler = {
+    isTestPin: function(pin) {
+        return pin === TEST_PIN;
+    },
+    handleTestPin: function() {
+        return handlePin(TEST_PIN);
     }
-});
-
-// Export minimal interface
-window.pinHandler = {
-    handlePin
 }; 
