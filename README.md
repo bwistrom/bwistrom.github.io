@@ -109,4 +109,4 @@ For detailed technical information, please refer to:
 
 ---
 
-*Created with quantum-entangled precision and innovation by MarX-@, inspired by the wonderful Valeria!* 🌟 
+*Created with quantum-entangled precision and innovation by MarX-@, inspired by the wonderful Valeria!* 🌟  // P.S - Björne Hälsar Alla :)
