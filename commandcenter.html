@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Center Environment</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        canvas {
+            display: block;
+        }
+        .command-center-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .time-display {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: #00ffff;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        .coordinates {
+            position: fixed;
+            top: 60px;
+            left: 20px;
+            color: #00ffff;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        .navigation-guide {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: #00ffff;
+            font-size: 16px;
+            z-index: 1000;
+        }
+        .pin-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .pin-container {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            text-align: center;
+        }
+        .pin-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            width: 200px;
+        }
+        .pin-button {
+            background: transparent;
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 10px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            transition: all 0.3s;
+        }
+        .pin-button:hover {
+            background: rgba(0, 255, 255, 0.2);
+        }
+        .loading-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .loading-bar {
+            width: 300px;
+            height: 4px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
+            border-radius: 2px;
+            margin-top: 20px;
+        }
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+            background: #00ffff;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        .loading-text {
+            color: #00ffff;
+            font-family: 'Orbitron', monospace;
+            font-size: 18px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        @font-face {
+            font-family: 'Orbitron';
+            src: url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        }
+    </style>
+</head>
+<body>
+    <div class="pin-overlay" id="pinOverlay">
+        <div class="pin-container">
+            <h2 style="color: #00ffff; font-family: 'Orbitron', monospace; text-align: center;">Enter PIN</h2>
+            <input type="password" class="pin-input" id="pinInput" maxlength="9" pattern="[0-9]*">
+            <button class="pin-button" onclick="verifyPin()">Verify</button>
+        </div>
+    </div>
+    <div class="loading-container" id="loadingContainer">
+        <div class="loading-text">Initializing Command Center...</div>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+    </div>
+    <div class="command-center-overlay">
+        <div class="time-display">Time: <span id="time">00:00:00</span></div>
+        <div class="coordinates">X: <span id="x">0</span> Y: <span id="y">0</span> Z: <span id="z">0</span></div>
+    </div>
+    <div class="navigation-guide">
+        🎮 Use mouse to look around | WASD to move | Space/Shift to move up/down
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="testpin.js"></script>
+    <script>
+        // Universal PIN system with enhanced security
+        const PIN = "911876418";
+        let environment = null;
+        let loadingProgress = 0;
+        let isInitialized = false;
+
+        // Prevent multiple initializations
+        function initializeEnvironment() {
+            if (isInitialized) return;
+            isInitialized = true;
+            
+            environment = new CommandCenterEnvironment();
+        }
+
+        // Secure PIN verification
+        function verifyPin() {
+            const pinInput = document.getElementById('pinInput');
+            const pinOverlay = document.getElementById('pinOverlay');
+            const loadingContainer = document.getElementById('loadingContainer');
+            
+            if (!pinInput || !pinOverlay || !loadingContainer) return;
+            
+            const enteredPin = pinInput.value;
+            
+            // Prevent manipulation of input
+            if (typeof enteredPin !== 'string' || enteredPin.length > 9) {
+                pinInput.value = '';
+                return;
+            }
+            
+            if (enteredPin === PIN) {
+                // Universal PIN access
+                pinOverlay.style.display = 'none';
+                loadingContainer.style.display = 'flex';
+                startLoading();
+            } else if (window.testPinHandler && window.testPinHandler.isTestPin(enteredPin)) {
+                if (window.testPinHandler.handleTestPin()) {
+                    pinOverlay.style.display = 'none';
+                    loadingContainer.style.display = 'flex';
+                    startLoading();
+                }
+            } else {
+                pinInput.value = '';
+            }
+        }
+
+        // Secure loading process
+        function startLoading() {
+            const progressBar = document.getElementById('loadingProgress');
+            if (!progressBar) return;
+            
+            const loadingInterval = setInterval(() => {
+                if (loadingProgress >= 100) {
+                    clearInterval(loadingInterval);
+                    const loadingContainer = document.getElementById('loadingContainer');
+                    if (loadingContainer) {
+                        loadingContainer.style.display = 'none';
+                    }
+                    initializeEnvironment();
+                } else {
+                    loadingProgress = Math.min(loadingProgress + 1, 100);
+                    progressBar.style.width = loadingProgress + '%';
+                }
+            }, 20);
+        }
+
+        // Enhanced security measures
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey || e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('selectstart', (e) => e.preventDefault());
+        document.addEventListener('dragstart', (e) => e.preventDefault());
+        
+        // Prevent view source and developer tools
+        setInterval(() => {
+            const devtools = /./;
+            devtools.toString = function() {
+                window.location.reload();
+            }
+        }, 1000);
+        
+        // Prevent console access
+        console.log = console.warn = console.error = () => {};
+        
+        // Prevent iframe embedding
+        if (window !== window.top) {
+            window.top.location.href = window.location.href;
+        }
+
+        class CommandCenterEnvironment {
+            constructor() {
+                this.initRenderer();
+                this.initScene();
+                this.initCamera();
+                this.initControls();
+                this.init();
+                this.animate();
+                this.setupEventListeners();
+            }
+
+            initRenderer() {
+                this.renderer = new THREE.WebGLRenderer({ 
+                    antialias: true,
+                    powerPreference: "high-performance",
+                    stencil: false,
+                    depth: true
+                });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setClearColor(0x000000);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                this.renderer.shadowMap.enabled = false;
+                document.body.appendChild(this.renderer.domElement);
+            }
+
+            initScene() {
+                this.scene = new THREE.Scene();
+                this.clock = new THREE.Clock();
+                this.lastTime = 0;
+                this.frameCount = 0;
+                this.fps = 0;
+            }
+
+            initCamera() {
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.camera.position.set(0, 2, 5);
+                this.camera.lookAt(0, 0, 0);
+            }
+
+            initControls() {
+                this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+                this.controls.enabled = true;
+                this.controls.enableDamping = true;
+                this.controls.dampingFactor = 0.05;
+                this.controls.screenSpacePanning = false;
+                this.controls.minDistance = 2;
+                this.controls.maxDistance = 10;
+                this.controls.maxPolarAngle = Math.PI / 2;
+                this.controls.target.set(0, 0, 0);
+                this.controls.update();
+            }
+
+            init() {
+                this.setupLighting();
+                this.createCommandCenter();
+                this.createQuantumField();
+                this.createTimeSphere();
+                this.createNeuralNetwork();
+                this.createParticleSystems();
+                this.setupTimeCounter();
+            }
+
+            setupLighting() {
+                const ambientLight = new THREE.AmbientLight(0x404040);
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+                directionalLight.position.set(5, 5, 5);
+                this.scene.add(ambientLight, directionalLight);
+            }
+
+            createCommandCenter() {
+                const centerGroup = new THREE.Group();
+                
+                const platformGeometry = new THREE.CylinderGeometry(2, 2, 0.2, 32);
+                const platformMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x00ffff,
+                    emissive: 0x00ffff,
+                    emissiveIntensity: 0.2,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const platform = new THREE.Mesh(platformGeometry, platformMaterial);
+                centerGroup.add(platform);
+
+                // Create holographic sign
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 512;
+                canvas.height = 256;
+                
+                // Set up text rendering
+                context.fillStyle = 'rgba(0, 0, 0, 0)';
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                
+                context.font = 'bold 48px Orbitron';
+                context.textAlign = 'center';
+                context.textBaseline = 'middle';
+                context.fillStyle = '#00ffff';
+                
+                // Add glow effect
+                context.shadowColor = '#00ffff';
+                context.shadowBlur = 20;
+                context.shadowOffsetX = 0;
+                context.shadowOffsetY = 0;
+                
+                // Draw text
+                context.fillText('Valeria Wiström -@', canvas.width/2, canvas.height/2 - 20);
+                context.font = 'bold 36px Orbitron';
+                context.fillText('Quantum Guardian', canvas.width/2, canvas.height/2 + 20);
+                
+                // Create texture from canvas
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.needsUpdate = true;
+                
+                // Create sign material
+                const signMaterial = new THREE.MeshPhongMaterial({
+                    map: texture,
+                    transparent: true,
+                    opacity: 0.8,
+                    emissive: 0x00ffff,
+                    emissiveIntensity: 0.5,
+                    side: THREE.DoubleSide
+                });
+                
+                // Create sign mesh
+                const signGeometry = new THREE.PlaneGeometry(3, 1.5);
+                const sign = new THREE.Mesh(signGeometry, signMaterial);
+                sign.position.y = 0.5;
+                centerGroup.add(sign);
+
+                const displayGeometry = new THREE.PlaneGeometry(2, 1);
+                const displayMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x00ffff,
+                    emissive: 0x00ffff,
+                    emissiveIntensity: 0.5,
+                    transparent: true,
+                    opacity: 0.6,
+                    side: THREE.DoubleSide
+                });
+
+                for (let i = 0; i < 4; i++) {
+                    const display = new THREE.Mesh(displayGeometry, displayMaterial);
+                    display.position.set(
+                        Math.cos(i * Math.PI / 2) * 3,
+                        1,
+                        Math.sin(i * Math.PI / 2) * 3
+                    );
+                    centerGroup.add(display);
+                }
+
+                this.scene.add(centerGroup);
+            }
+
+            createQuantumField() {
+                const fieldGeometry = new THREE.SphereGeometry(5, 32, 32);
+                const fieldMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x00ffff,
+                    emissive: 0x00ffff,
+                    emissiveIntensity: 0.1,
+                    transparent: true,
+                    opacity: 0.1,
+                    wireframe: true
+                });
+                this.quantumField = new THREE.Mesh(fieldGeometry, fieldMaterial);
+                this.scene.add(this.quantumField);
+            }
+
+            createTimeSphere() {
+                const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+                const sphereMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x00ffff,
+                    emissive: 0x00ffff,
+                    emissiveIntensity: 1
+                });
+                this.timeSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+                this.timeSphere.position.y = 3;
+                this.scene.add(this.timeSphere);
+            }
+
+            createNeuralNetwork() {
+                const particleCount = 100;
+                const positions = new Float32Array(particleCount * 3);
+                const velocities = new Float32Array(particleCount * 3);
+                
+                for (let i = 0; i < particleCount; i++) {
+                    positions[i * 3] = (Math.random() - 0.5) * 10;
+                    positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+                    positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+                    
+                    velocities[i * 3] = (Math.random() - 0.5) * 0.01;
+                    velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.01;
+                    velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.01;
+                }
+                
+                const networkGeometry = new THREE.BufferGeometry();
+                networkGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                
+                const networkMaterial = new THREE.PointsMaterial({
+                    color: 0x00ffff,
+                    size: 0.1,
+                    transparent: true,
+                    opacity: 0.6
+                });
+                
+                this.neuralNetwork = new THREE.Points(networkGeometry, networkMaterial);
+                this.scene.add(this.neuralNetwork);
+                this.neuralVelocities = velocities;
+            }
+
+            createParticleSystems() {
+                const particleCount = 200;
+                const positions = new Float32Array(particleCount * 3);
+                const velocities = new Float32Array(particleCount * 3);
+                
+                for (let i = 0; i < particleCount; i++) {
+                    positions[i * 3] = (Math.random() - 0.5) * 20;
+                    positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+                    positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+                    
+                    velocities[i * 3] = (Math.random() - 0.5) * 0.1;
+                    velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.1;
+                    velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.1;
+                }
+                
+                const particles = new THREE.BufferGeometry();
+                particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                
+                const particleMaterial = new THREE.PointsMaterial({
+                    color: 0x00ffff,
+                    size: 0.05,
+                    transparent: true,
+                    opacity: 0.6
+                });
+                
+                this.particleSystem = new THREE.Points(particles, particleMaterial);
+                this.scene.add(this.particleSystem);
+                this.particlePositions = positions;
+                this.particleVelocities = velocities;
+            }
+
+            setupTimeCounter() {
+                this.startTime = Date.now();
+                this.timeDisplay = document.getElementById('time');
+                this.updateTimeDisplay();
+            }
+
+            setupEventListeners() {
+                window.addEventListener('resize', () => this.onWindowResize());
+                window.addEventListener('visibilitychange', () => this.handleVisibilityChange());
+            }
+
+            handleVisibilityChange() {
+                if (document.hidden) {
+                    this.lastTime = Date.now();
+                } else {
+                    const currentTime = Date.now();
+                    const timeDiff = currentTime - this.lastTime;
+                    this.startTime += timeDiff;
+                }
+            }
+
+            updateTimeDisplay() {
+                const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+                const hours = Math.floor(elapsed / 3600);
+                const minutes = Math.floor((elapsed % 3600) / 60);
+                const seconds = elapsed % 60;
+                
+                this.timeDisplay.textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                requestAnimationFrame(() => this.updateTimeDisplay());
+            }
+
+            updateParticleSystems() {
+                const positions = this.particleSystem.geometry.attributes.position.array;
+                const time = this.clock.getElapsedTime();
+                
+                for (let i = 0; i < positions.length; i += 3) {
+                    positions[i] += this.particleVelocities[i];
+                    positions[i + 1] += this.particleVelocities[i + 1];
+                    positions[i + 2] += this.particleVelocities[i + 2];
+                    
+                    if (Math.abs(positions[i]) > 10 || Math.abs(positions[i + 1]) > 10 || Math.abs(positions[i + 2]) > 10) {
+                        positions[i] = (Math.random() - 0.5) * 20;
+                        positions[i + 1] = (Math.random() - 0.5) * 20;
+                        positions[i + 2] = (Math.random() - 0.5) * 20;
+                    }
+                }
+                
+                this.particleSystem.geometry.attributes.position.needsUpdate = true;
+            }
+
+            updateQuantumField() {
+                if (this.quantumField) {
+                    this.quantumField.rotation.y += 0.001;
+                }
+            }
+
+            updateNeuralNetwork() {
+                if (this.neuralNetwork) {
+                    const positions = this.neuralNetwork.geometry.attributes.position.array;
+                    for (let i = 0; i < positions.length; i += 3) {
+                        positions[i] += this.neuralVelocities[i];
+                        positions[i + 1] += this.neuralVelocities[i + 1];
+                        positions[i + 2] += this.neuralVelocities[i + 2];
+                    }
+                    this.neuralNetwork.geometry.attributes.position.needsUpdate = true;
+                }
+            }
+
+            updateCoordinates() {
+                const x = document.getElementById('x');
+                const y = document.getElementById('y');
+                const z = document.getElementById('z');
+                
+                x.textContent = this.camera.position.x.toFixed(2);
+                y.textContent = this.camera.position.y.toFixed(2);
+                z.textContent = this.camera.position.z.toFixed(2);
+            }
+
+            onWindowResize() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            }
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                
+                const currentTime = Date.now();
+                this.frameCount++;
+                
+                if (currentTime - this.lastTime >= 1000) {
+                    this.fps = this.frameCount;
+                    this.frameCount = 0;
+                    this.lastTime = currentTime;
+                }
+                
+                this.updateParticleSystems();
+                this.updateQuantumField();
+                this.updateNeuralNetwork();
+                this.updateCoordinates();
+                
+                this.controls.update();
+                
+                this.renderer.render(this.scene, this.camera);
+            }
+        }
+    </script>
+</body>
+</html> 
