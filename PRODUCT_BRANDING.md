@@ -87,8 +87,8 @@ A stylized representation of a quantum nexus point in cyan tones, where classica
 
 For branding inquiries:
 MarX Björn Wiström
-Personal ID: 19850930-2934
-Address: Smålandsgatan 9, 59331 Västervik, Sverige
+Personal ID: 
+Address:
 Telephone: +46762261642
 Email: 003wistrom@gmail.com
 
