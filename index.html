@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse 2 Environment - Enhanced Clone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Courier New', monospace;
+        }
+        
+        canvas {
+            display: block;
+        }
+        
+        .warehouse-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .time-display {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+            z-index: 1000;
+        }
+        
+        .coordinates {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+            z-index: 1000;
+        }
+        
+        .navigation-guide {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+            z-index: 1000;
+            text-align: right;
+        }
+        
+        .pin-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .pin-container {
+            background: rgba(0, 255, 0, 0.1);
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.4);
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .pin-input {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            width: 250px;
+            border-radius: 5px;
+        }
+        
+        .pin-button {
+            background: transparent;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 15px 30px;
+            margin: 15px 0;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .pin-button:hover {
+            background: rgba(0, 255, 0, 0.2);
+        }
+        
+        .loading-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loading-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 28px;
+            color: #00ffff;
+            text-shadow: 0 0 15px #00ffff;
+            margin-bottom: 30px;
+        }
+        
+        .loading-bar {
+            width: 400px;
+            height: 6px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid #00ffff;
+            border-radius: 3px;
+        }
+        
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #00ff00);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="pin-overlay" id="pinOverlay">
+        <div class="pin-container">
+            <h2 style="color: #00ff00; font-family: 'Orbitron', monospace;">🔐 SECURE ACCESS</h2>
+            <input type="password" class="pin-input" id="pinInput" maxlength="9" placeholder="Enter PIN">
+            <br>
+            <button class="pin-button" onclick="verifyPin()">🚀 Initialize</button>
+        </div>
+    </div>
+    
+    <div class="loading-container" id="loadingContainer">
+        <div class="loading-text">Initializing Enhanced Warehouse 2...</div>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+    </div>
+    
+    <div class="warehouse-overlay">
+        <div class="time-display">🕐 Time: <span id="time">00:00:00</span></div>
+        <div class="coordinates">📍 X:<span id="x">0</span> Y:<span id="y">0</span> Z:<span id="z">0</span></div>
+    </div>
+    
+    <div class="navigation-guide">
+        🎮 Enhanced Controls:<br>
+        Mouse: Look around<br>
+        WASD: Move<br>
+        Space/Shift: Up/Down<br>
+        R: Reset position
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="enhanced-features.js"></script>
+    
+    <script>
+        // Enhanced Warehouse 2 Environment - Clone 1
+        const PIN = "911876418";
+        let environment = null;
+        let loadingProgress = 0;
+        let isInitialized = false;
+        
+        function verifyPin() {
+            const pinInput = document.getElementById('pinInput');
+            const pinOverlay = document.getElementById('pinOverlay');
+            const loadingContainer = document.getElementById('loadingContainer');
+            
+            if (pinInput.value === PIN) {
+                pinOverlay.style.display = 'none';
+                loadingContainer.style.display = 'flex';
+                startLoading();
+            } else {
+                pinInput.value = '';
+                pinInput.style.borderColor = '#ff0000';
+                setTimeout(() => {
+                    pinInput.style.borderColor = '#00ff00';
+                }, 1000);
+            }
+        }
+        
+        function startLoading() {
+            const progressBar = document.getElementById('loadingProgress');
+            const loadingInterval = setInterval(() => {
+                if (loadingProgress >= 100) {
+                    clearInterval(loadingInterval);
+                    document.getElementById('loadingContainer').style.display = 'none';
+                    initializeEnvironment();
+                } else {
+                    loadingProgress += 2;
+                    progressBar.style.width = loadingProgress + '%';
+                }
+            }, 50);
+        }
+        
+        function initializeEnvironment() {
+            if (isInitialized) return;
+            isInitialized = true;
+            environment = new EnhancedWarehouseEnvironment();
+        }
+        
+        // Enhanced Warehouse Environment Class
+        class EnhancedWarehouseEnvironment {
+            constructor() {
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.controls = null;
+                this.startTime = Date.now();
+                this.init();
+            }
+            
+            init() {
+                this.initRenderer();
+                this.initScene();
+                this.initCamera();
+                this.initControls();
+                this.initLighting();
+                this.createEnvironment();
+                this.setupEventListeners();
+                this.startAnimation();
+                this.startTimeCounter();
+            }
+            
+            initRenderer() {
+                this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setClearColor(0x000000);
+                document.body.appendChild(this.renderer.domElement);
+            }
+            
+            initScene() {
+                this.scene = new THREE.Scene();
+                this.scene.fog = new THREE.Fog(0x000000, 50, 200);
+            }
+            
+            initCamera() {
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.camera.position.set(0, 10, 20);
+            }
+            
+            initControls() {
+                this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+                this.controls.enableDamping = true;
+                this.controls.dampingFactor = 0.05;
+            }
+            
+            initLighting() {
+                const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+                this.scene.add(ambientLight);
+                
+                const directionalLight = new THREE.DirectionalLight(0x00ffff, 0.8);
+                directionalLight.position.set(10, 20, 10);
+                this.scene.add(directionalLight);
+            }
+            
+            createEnvironment() {
+                this.createWarehouse();
+                this.createQuantumField();
+                this.createNeuralNetwork();
+                this.createTimeSphere();
+            }
+            
+            createWarehouse() {
+                // Floor
+                const floorGeometry = new THREE.PlaneGeometry(100, 100);
+                const floorMaterial = new THREE.MeshLambertMaterial({ color: 0x333333 });
+                const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+                floor.rotation.x = -Math.PI / 2;
+                this.scene.add(floor);
+                
+                // Walls
+                const wallMaterial = new THREE.MeshLambertMaterial({ color: 0x444444, transparent: true, opacity: 0.6 });
+                const wallGeometry = new THREE.PlaneGeometry(100, 30);
+                
+                const walls = [
+                    { pos: [0, 15, -50], rot: [0, 0, 0] },
+                    { pos: [0, 15, 50], rot: [0, Math.PI, 0] },
+                    { pos: [-50, 15, 0], rot: [0, Math.PI/2, 0] },
+                    { pos: [50, 15, 0], rot: [0, -Math.PI/2, 0] }
+                ];
+                
+                walls.forEach(wall => {
+                    const mesh = new THREE.Mesh(wallGeometry, wallMaterial);
+                    mesh.position.set(...wall.pos);
+                    mesh.rotation.set(...wall.rot);
+                    this.scene.add(mesh);
+                });
+            }
+            
+            createQuantumField() {
+                const particleCount = 1000;
+                const geometry = new THREE.BufferGeometry();
+                const positions = new Float32Array(particleCount * 3);
+                const colors = new Float32Array(particleCount * 3);
+                
+                for (let i = 0; i < particleCount; i++) {
+                    positions[i * 3] = (Math.random() - 0.5) * 80;
+                    positions[i * 3 + 1] = Math.random() * 25;
+                    positions[i * 3 + 2] = (Math.random() - 0.5) * 80;
+                    
+                    colors[i * 3] = Math.random();
+                    colors[i * 3 + 1] = Math.random() * 0.5 + 0.5;
+                    colors[i * 3 + 2] = 1;
+                }
+                
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+                
+                const material = new THREE.PointsMaterial({
+                    size: 0.1,
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                
+                this.quantumField = new THREE.Points(geometry, material);
+                this.scene.add(this.quantumField);
+            }
+            
+            createNeuralNetwork() {
+                const nodeCount = 20;
+                this.neuralNodes = [];
+                
+                for (let i = 0; i < nodeCount; i++) {
+                    const nodeGeometry = new THREE.SphereGeometry(0.3, 8, 8);
+                    const nodeMaterial = new THREE.MeshBasicMaterial({ 
+                        color: 0x00ffff,
+                        transparent: true,
+                        opacity: 0.8
+                    });
+                    
+                    const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
+                    node.position.set(
+                        (Math.random() - 0.5) * 60,
+                        Math.random() * 20 + 5,
+                        (Math.random() - 0.5) * 60
+                    );
+                    
+                    this.neuralNodes.push(node);
+                    this.scene.add(node);
+                }
+            }
+            
+            createTimeSphere() {
+                // Create Swedish flag colored time sphere (blue base with yellow wireframe)
+                const geometry = new THREE.SphereGeometry(2, 32, 32);
+                
+                // Swedish flag blue base sphere
+                const blueMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0x006aa7,  // Swedish flag blue
+                    transparent: true,
+                    opacity: 0.4
+                });
+                
+                // Swedish flag yellow wireframe
+                const yellowMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0xfecc00,  // Swedish flag yellow
+                    transparent: true,
+                    opacity: 0.8,
+                    wireframe: true
+                });
+                
+                // Create blue base sphere
+                const blueSphere = new THREE.Mesh(geometry, blueMaterial);
+                blueSphere.position.set(0, 15, 0);
+                this.scene.add(blueSphere);
+                
+                // Create yellow wireframe sphere
+                this.timeSphere = new THREE.Mesh(geometry, yellowMaterial);
+                this.timeSphere.position.set(0, 15, 0);
+                this.scene.add(this.timeSphere);
+                
+                // Store reference to blue sphere for animation
+                this.blueSphere = blueSphere;
+            }
+            
+            setupEventListeners() {
+                window.addEventListener('resize', () => this.onWindowResize());
+                document.addEventListener('keydown', (event) => this.onKeyDown(event));
+            }
+            
+            onWindowResize() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+            
+            onKeyDown(event) {
+                switch(event.code) {
+                    case 'KeyR':
+                        this.camera.position.set(0, 10, 20);
+                        this.controls.target.set(0, 0, 0);
+                        break;
+                }
+            }
+            
+            startAnimation() {
+                this.animate();
+            }
+            
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                
+                this.controls.update();
+                
+                // Animate quantum field
+                if (this.quantumField) {
+                    this.quantumField.rotation.y += 0.001;
+                }
+                
+                // Animate Swedish flag time spheres
+                if (this.timeSphere) {
+                    this.timeSphere.rotation.x += 0.01;
+                    this.timeSphere.rotation.y += 0.005;
+                }
+                
+                if (this.blueSphere) {
+                    this.blueSphere.rotation.x += 0.008;
+                    this.blueSphere.rotation.y += 0.003;
+                }
+                
+                // Animate neural nodes
+                this.neuralNodes.forEach((node, index) => {
+                    node.position.y += Math.sin(Date.now() * 0.001 + index) * 0.01;
+                });
+                
+                this.updateCoordinates();
+                this.renderer.render(this.scene, this.camera);
+            }
+            
+            startTimeCounter() {
+                setInterval(() => {
+                    const elapsed = Date.now() - this.startTime;
+                    const seconds = Math.floor(elapsed / 1000) % 60;
+                    const minutes = Math.floor(elapsed / 60000) % 60;
+                    const hours = Math.floor(elapsed / 3600000);
+                    
+                    const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    document.getElementById('time').textContent = timeString;
+                }, 1000);
+            }
+            
+            updateCoordinates() {
+                document.getElementById('x').textContent = Math.round(this.camera.position.x);
+                document.getElementById('y').textContent = Math.round(this.camera.position.y);
+                document.getElementById('z').textContent = Math.round(this.camera.position.z);
+            }
+        }
+        
+        // Initialize on Enter key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && document.getElementById('pinOverlay').style.display !== 'none') {
+                verifyPin();
+            }
+        });
+    </script>
+</body>
+</html>

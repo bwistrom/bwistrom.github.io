@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌲 Forest Sanctuary - Nature's Quantum Gateway 🌲</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Dancing+Script:wght@700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cinzel', serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, 
+                #0f4c3a 0%, 
+                #1a5f4a 25%, 
+                #2d7a5f 50%, 
+                #4a9574 75%, 
+                #6bb089 100%);
+            position: relative;
+            height: 100vh;
+        }
+        
+        /* Animated Background */
+        .nature-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(46, 125, 50, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(76, 175, 80, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(139, 195, 74, 0.2) 0%, transparent 50%);
+            animation: breathe 8s ease-in-out infinite;
+        }
+        
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+        
+        /* Floating Particles */
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+        
+        /* Main Container */
+        .sanctuary-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Title */
+        .sanctuary-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4.5rem;
+            color: #e8f5e8;
+            text-shadow: 
+                0 0 20px rgba(139, 195, 74, 0.8),
+                0 0 40px rgba(76, 175, 80, 0.6),
+                0 0 60px rgba(46, 125, 50, 0.4);
+            margin-bottom: 1rem;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(139, 195, 74, 0.8), 0 0 40px rgba(76, 175, 80, 0.6), 0 0 60px rgba(46, 125, 50, 0.4); }
+            to { text-shadow: 0 0 30px rgba(139, 195, 74, 1), 0 0 50px rgba(76, 175, 80, 0.8), 0 0 70px rgba(46, 125, 50, 0.6); }
+        }
+        
+        /* Subtitle */
+        .sanctuary-subtitle {
+            font-size: 1.8rem;
+            color: #c8e6c9;
+            margin-bottom: 3rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            opacity: 0.9;
+        }
+        
+        /* Navigation Cards */
+        .nav-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            padding: 0 2rem;
+        }
+        
+        .nav-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(139, 195, 74, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 195, 74, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .nav-card:hover::before {
+            left: 100%;
+        }
+        
+        .nav-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(139, 195, 74, 0.8);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(139, 195, 74, 0.4);
+        }
+        
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            color: #e8f5e8;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .card-description {
+            color: #c8e6c9;
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        /* Swedish Flag Colors Accent */
+        .swedish-accent {
+            background: linear-gradient(45deg, #006aa7, #fecc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sanctuary-title {
+                font-size: 3rem;
+            }
+            
+            .sanctuary-subtitle {
+                font-size: 1.4rem;
+            }
+            
+            .nav-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .nav-card {
+                padding: 1.5rem;
+            }
+        }
+        
+        /* Nature Sound Waves */
+        .sound-wave {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 4px;
+        }
+        
+        .wave-bar {
+            width: 4px;
+            background: rgba(139, 195, 74, 0.6);
+            border-radius: 2px;
+            animation: wave 1.5s ease-in-out infinite;
+        }
+        
+        .wave-bar:nth-child(1) { height: 20px; animation-delay: 0s; }
+        .wave-bar:nth-child(2) { height: 30px; animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { height: 25px; animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { height: 35px; animation-delay: 0.3s; }
+        .wave-bar:nth-child(5) { height: 20px; animation-delay: 0.4s; }
+        
+        @keyframes wave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.5); }
+        }
+    </style>
+</head>
+<body>
+    <div class="nature-bg"></div>
+    
+    <div class="sanctuary-container">
+        <h1 class="sanctuary-title">🌲 Forest Sanctuary 🌲</h1>
+        <p class="sanctuary-subtitle">Nature's Quantum Consciousness Gateway</p>
+        
+        <div class="nav-container">
+            <div class="nav-card" onclick="enterQuantumRealm()">
+                <span class="card-icon">🇸🇪</span>
+                <h3 class="card-title">Swedish <span class="swedish-accent">Quantum Realm</span></h3>
+                <p class="card-description">
+                    Enter the enhanced Warehouse 2 environment featuring the majestic Swedish flag globe. 
+                    Experience quantum consciousness with patriotic Nordic energy.
+                </p>
+            </div>
+            
+            <div class="nav-card" onclick="explorePlateaus()">
+                <span class="card-icon">🌌</span>
+                <h3 class="card-title">Consciousness Plateaus</h3>
+                <p class="card-description">
+                    Discover 100 unique consciousness exploration environments. 
+                    Each plateau offers a different journey through quantum realms.
+                </p>
+            </div>
+            
+            <div class="nav-card" onclick="activateMarx()">
+                <span class="card-icon">🧠</span>
+                <h3 class="card-title">Marx Wiström System</h3>
+                <p class="card-description">
+                    Activate the advanced Marx Wiström consciousness module. 
+                    Experience multi-level consciousness and reality manipulation.
+                </p>
+            </div>
+            
+            <div class="nav-card" onclick="viewDocumentation()">
+                <span class="card-icon">📚</span>
+                <h3 class="card-title">Sacred Knowledge</h3>
+                <p class="card-description">
+                    Access comprehensive documentation and wisdom about the 
+                    quantum consciousness system and its mystical capabilities.
+                </p>
+            </div>
+        </div>
+        
+        <div class="sound-wave">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Create floating particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const size = Math.random() * 4 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 20000);
+        }
+        
+        // Generate particles continuously
+        setInterval(createParticle, 300);
+        
+        // Navigation functions
+        function enterQuantumRealm() {
+            // Add entrance animation
+            document.body.style.transition = 'all 1s ease';
+            document.body.style.transform = 'scale(0.95)';
+            document.body.style.opacity = '0.7';
+            
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+        
+        function explorePlateaus() {
+            // Add mystical transition
+            document.body.style.transition = 'all 1.2s ease';
+            document.body.style.filter = 'hue-rotate(180deg)';
+            document.body.style.transform = 'scale(1.1)';
+            
+            setTimeout(() => {
+                window.location.href = '../plateaus/index.html';
+            }, 1200);
+        }
+        
+        function activateMarx() {
+            // Add consciousness activation effect
+            document.body.style.transition = 'all 0.8s ease';
+            document.body.style.filter = 'brightness(1.5) contrast(1.2)';
+            
+            setTimeout(() => {
+                alert('🧠 Marx Wiström System requires backend activation. Please run marx_wistrom_system.py');
+            }, 800);
+        }
+        
+        function viewDocumentation() {
+            // Add knowledge seeking effect
+            document.body.style.transition = 'all 1s ease';
+            document.body.style.filter = 'sepia(0.3) brightness(1.1)';
+            
+            setTimeout(() => {
+                window.location.href = '../PROJECT_DOCUMENTATION.md';
+            }, 1000);
+        }
+        
+        // Add ambient nature sounds simulation (visual)
+        function simulateNatureSounds() {
+            const waves = document.querySelectorAll('.wave-bar');
+            waves.forEach((wave, index) => {
+                setInterval(() => {
+                    const intensity = Math.random() * 0.5 + 0.5;
+                    wave.style.opacity = intensity;
+                    wave.style.transform = `scaleY(${intensity * 2})`;
+                }, Math.random() * 2000 + 1000);
+            });
+        }
+        
+        // Initialize ambient effects
+        setTimeout(simulateNatureSounds, 2000);
+        
+        // Add mystical cursor trail
+        document.addEventListener('mousemove', (e) => {
+            const trail = document.createElement('div');
+            trail.style.position = 'absolute';
+            trail.style.left = e.clientX + 'px';
+            trail.style.top = e.clientY + 'px';
+            trail.style.width = '6px';
+            trail.style.height = '6px';
+            trail.style.background = 'rgba(139, 195, 74, 0.6)';
+            trail.style.borderRadius = '50%';
+            trail.style.pointerEvents = 'none';
+            trail.style.zIndex = '1000';
+            trail.style.transition = 'all 0.5s ease';
+            
+            document.body.appendChild(trail);
+            
+            setTimeout(() => {
+                trail.style.opacity = '0';
+                trail.style.transform = 'scale(2)';
+            }, 50);
+            
+            setTimeout(() => {
+                trail.remove();
+            }, 500);
+        });
+        
+        // Welcome message
+        setTimeout(() => {
+            console.log('🌲 Welcome to the Forest Sanctuary 🌲');
+            console.log('🇸🇪 Swedish Quantum Consciousness Gateway Activated 🇸🇪');
+            console.log('🌌 Nature\'s wisdom flows through digital realms 🌌');
+        }, 1000);
+    </script>
+</body>
+</html>
