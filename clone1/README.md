@@ -14,7 +14,6 @@ clone1/
 ## Key Enhancements
 
 ### 🔐 Enhanced Security
-- **Multi-PIN Support**: Primary PIN (911876418) + test PIN (000000000)
 - **Lockout Protection**: 3 attempts max, 30-second lockout
 - **Security Logging**: Comprehensive access and security event logging
 - **Attempt Tracking**: Real-time monitoring of authentication attempts
